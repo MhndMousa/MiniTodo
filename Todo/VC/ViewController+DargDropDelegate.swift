@@ -71,5 +71,16 @@ extension ViewController: UITableViewDropDelegate,UITableViewDragDelegate{
                tableView.insertRows(at: indexPaths, with: .automatic)
            }
        }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let selectedItemIdentifier = self.datasource.itemIdentifier(for: indexPath) else {print("error");return}
+        guard let cell = tableView.cellForRow(at: indexPath) as? TableViewCell else {return}
+        
+        cell.changeAttributedText(string: selectedItemIdentifier.string, status: selectedItemIdentifier.status.opposite)
+
+        applySnapshotChanges(todoList.list)
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+
   
 }

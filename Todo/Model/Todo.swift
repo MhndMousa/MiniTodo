@@ -13,8 +13,12 @@ class Todo: NSObject,Codable, NSItemProviderReading, NSItemProviderWriting{
      
     
     let id = UUID()
-    let string:String
+    var string:String
     var status: TodoStatus
+    override init() {
+        self.string = ""
+        self.status = .unfinished
+    }
     init(string: String, status: TodoStatus) {
         self.string = string
         self.status = status

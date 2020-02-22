@@ -8,19 +8,16 @@
 import UIKit
 import Foundation
 
-extension ViewController: UISearchBarDelegate{
+extension ViewController: UISearchBarDelegate,UISearchResultsUpdating{
+    func updateSearchResults(for searchController: UISearchController) {
+        let searchBar = searchController.searchBar
+        let filteredArray = searchBar.text!.isEmpty ? self.todoList.list : self.todoList.list.filter { $0.string.contains(searchBar.text!)}
+        applySnapshotChanges(filteredArray)
+    }
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         let filteredArray = searchText.isEmpty ? self.todoList.list : self.todoList.list.filter { $0.string.contains(searchText)}
         applySnapshotChanges(filteredArray)
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let selectedItemIdentifier = self.datasource.itemIdentifier(for: indexPath) else {print("error");return}
-        guard let cell = tableView.cellForRow(at: indexPath) as? TableViewCell else {return}
-        
-        cell.changeAttributedText(string: selectedItemIdentifier.string, status: selectedItemIdentifier.status.opposite)
-
-        applySnapshotChanges(todoList.list)
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
 }

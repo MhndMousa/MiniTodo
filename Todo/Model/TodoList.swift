@@ -22,8 +22,11 @@ struct TodoList : Hashable {
     }
     
     /// The method for adding a new item to the table view's data model.
-    mutating func addItem(_ place: Todo, at index: Int) {
-        list.insert(place, at: index)
+    mutating func addItem(_ todo: Todo, at index: Int) {
+        list.insert(todo, at: index)
+    }
+    mutating func appendItem (_ todo: Todo){
+        list.append(todo)
     }
     mutating func changeStatus(to status: TodoStatus, index: Int){
         list[index].status = status
