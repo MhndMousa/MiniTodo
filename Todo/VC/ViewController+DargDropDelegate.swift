@@ -11,11 +11,11 @@ import UIKit
 
 extension ViewController: UITableViewDropDelegate,UITableViewDragDelegate{
     func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
-        return array.dragItems(for: indexPath)
+        return todoList.dragItems(for: indexPath)
     }
     
     func tableView(_ tableView: UITableView, canHandle session: UIDropSession) -> Bool {
-           return array.canHandle(session)
+           return todoList.canHandle(session)
        }
 
        /**
@@ -64,7 +64,7 @@ extension ViewController: UITableViewDropDelegate,UITableViewDragDelegate{
                var indexPaths = [IndexPath]()
                for (index, item) in stringItems.enumerated() {
                    let indexPath = IndexPath(row: destinationIndexPath.row + index, section: destinationIndexPath.section)
-                   self.array.addItem(item, at: indexPath.row)
+                   self.todoList.addItem(item, at: indexPath.row)
                    indexPaths.append(indexPath)
                }
 
