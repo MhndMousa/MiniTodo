@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-extension ViewController: UITableViewDropDelegate,UITableViewDragDelegate{
+extension ViewController: UITableViewDropDelegate,UITableViewDragDelegate, UITableViewDelegate{
     func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
         return todoList.dragItems(for: indexPath)
     }
@@ -72,7 +72,7 @@ extension ViewController: UITableViewDropDelegate,UITableViewDragDelegate{
            }
        }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let selectedItemIdentifier = self.datasource.itemIdentifier(for: indexPath) else {print("error");return}
         guard let cell = tableView.cellForRow(at: indexPath) as? TableViewCell else {return}
         

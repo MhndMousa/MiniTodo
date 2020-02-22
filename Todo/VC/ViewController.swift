@@ -9,14 +9,15 @@
 import UIKit
 
 
-class ViewController: UITableViewController{
+class ViewController: UIViewController{
+    
     typealias TodoDataSource = UITableViewDiffableDataSource<TodoStatus, Todo>
     typealias TodoSnapshot = NSDiffableDataSourceSnapshot<TodoStatus, Todo>
     let cellId = "cell"
     var datasource :  TodoDataSource!
     var todoList = TodoList()
     var searchController = UISearchController(searchResultsController: nil)
-    
+    var tableView: UITableView!
 
     
     override func viewDidLoad() {
@@ -26,30 +27,38 @@ class ViewController: UITableViewController{
         configureDataSource()
         applySnapshot()
         configureNavigationBar()
+//        configureToolbar()
     }
 
     
     
     // MARK: Helpers
 
+    fileprivate func configureToolbar(){
+        let backgroundSwitcherItem = UIBarButtonItem(customView: UISegmentedControl(items: ["Finished","Unfiinished"]))
+        toolbarItems = [
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+            backgroundSwitcherItem,
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        ]
+    }
     
     func configureNavigationBar() {
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search Candies"
+        searchController.searchBar.delegate = self
         navigationItem.searchController = searchController
         definesPresentationContext = true
-        searchController.searchBar.delegate = self
         
         self.navigationItem.largeTitleDisplayMode = .always
         self.navigationController?.navigationBar.prefersLargeTitles = true
-        self.title = "Notes"
+        self.title = "خربشة"
         
-        let addItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action:  #selector(addTodo))
-        let searchItem =  UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(toggleSearch))
-        let settingItem = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(changeColor))
+        let addItem = UIBarButtonItem(image: UIImage(systemName: "plus.circle.fill")!, style: .plain, target: self, action:  #selector(addTodo))
+        let searchItem =  UIBarButtonItem(image: UIImage(systemName: "magnifyingglass.circle.fill"), style: .plain, target: self, action: #selector(toggleSearch))
+        let settingItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle.fill")!,style: .plain, target: self, action: #selector(changeColor))
         self.navigationItem.rightBarButtonItems = [settingItem]
-        self.navigationItem.leftBarButtonItems = [addItem, searchItem]
+        self.navigationItem.leftBarButtonItems  = [addItem, searchItem]
     }
     
     
@@ -59,7 +68,9 @@ class ViewController: UITableViewController{
         self.tableView.dragInteractionEnabled = true
         self.tableView.dragDelegate = self
         self.tableView.dropDelegate = self
+        self.tableView.delegate = self
         self.tableView.tableFooterView = UIView()
+        self.view = self.tableView
     }
     
     
@@ -115,7 +126,8 @@ class ViewController: UITableViewController{
             todo.status = .unfinished
             disptach.leave() // Leave for every entry
         }))
-        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            
         self.present(alert, animated: true, completion: nil)
 
         // Will trigger once number of .enter() = number of .leave()
@@ -155,6 +167,7 @@ class ViewController: UITableViewController{
             }))
         }
         
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
     
