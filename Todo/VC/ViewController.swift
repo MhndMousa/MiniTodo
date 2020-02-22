@@ -14,38 +14,9 @@ class ViewController: UITableViewController{
     typealias TodoSnapshot = NSDiffableDataSourceSnapshot<TodoStatus, Todo>
     let cellId = "cell"
     var datasource :  TodoDataSource!
-    var array = TodoList()
+    var todoList = TodoList()
     
-    fileprivate func configureDataSource() {
-        datasource =  DataSource(tableView: self.tableView) { (tableView, indexPath, todo) -> TableViewCell? in
-            let cell = self.tableView.dequeueReusableCell(withIdentifier: self.cellId, for: indexPath) as! TableViewCell
-            cell.todo = todo
-            return cell
-        }
-    }
-    
-   
-    
-    
-    fileprivate func populateArray() {
-        for i in 1...6
-        {
-            array.addItem(Todo(string: String(i), status: .unfinished), at: 0)
-        }
 
-        array.addItem(Todo(string: String(90), status: .finished), at: 0)
-    }
-    
-    fileprivate func applySnapshot() {
-        let  finished  = self.array.placeNames.filter({$0.status == .finished})
-        let unfinished = self.array.placeNames.filter({$0.status == .unfinished})
-        
-        var snapshot = TodoSnapshot()
-        snapshot.appendSections(TodoStatus.allCases)
-        snapshot.appendItems(unfinished,toSection: .unfinished)
-        snapshot.appendItems(finished,  toSection: .finished)
-        datasource.apply(snapshot, animatingDifferences: true)
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,6 +40,46 @@ class ViewController: UITableViewController{
         navigationItem.leftBarButtonItems = [searchItem]
     }
     
+    // MARK: Helpers
+
+    // Configure data source and fill resuable cells
+    fileprivate func configureDataSource() {
+        datasource =  DataSource(tableView: self.tableView) { (tableView, indexPath, todo) -> TableViewCell? in
+            let cell = self.tableView.dequeueReusableCell(withIdentifier: self.cellId, for: indexPath) as! TableViewCell
+            cell.todo = todo
+            return cell
+        }
+    }
+     
+     // #TODO: Add core data integration
+     fileprivate func populateArray() {
+         for i in 1...6
+         {
+             todoList.addItem(Todo(string: String(i), status: .unfinished), at: 0)
+         }
+         todoList.addItem(Todo(string: String(90), status: .finished), at: 0)
+     }
+     
+     // Initial snapshot
+     fileprivate func applySnapshot() {
+        applySnapshotChanges(self.todoList.list)
+     }
+    
+    func applySnapshotChanges(_ array: [Todo]) {
+         let finished =      array.filter({$0.status == .finished})
+         let unfinished =    array.filter({$0.status == .unfinished})
+         
+         var snapshot = TodoSnapshot()
+         snapshot.appendSections(TodoStatus.allCases)
+         snapshot.appendItems(unfinished,toSection: .unfinished)
+         snapshot.appendItems(finished,  toSection: .finished)
+         datasource.apply(snapshot, animatingDifferences: true)
+     }
+    
+
+    // MARK: Handlers
+    
+
     @objc
     func toggleEditing() {
         tableView.setEditing(!tableView.isEditing, animated: true)
