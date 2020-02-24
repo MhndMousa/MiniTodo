@@ -23,11 +23,9 @@ class TableViewCell: UITableViewCell,TickDelegate {
     var todo : Todo!{
         didSet{
             print(self.todo.string, " Was added")
-//            changeAccessoryTypeIfNeeded()
             backgroundColor = .clear
-//            textLabel?.textColor = .white
-//            textLabel?.textAlignment = .center
             label.attributedText = makeAttributedText(string: todo.string, status: todo.status)
+            checkBox.isClicked = self.todo.status == .finished
             
         }
     }
@@ -40,7 +38,7 @@ class TableViewCell: UITableViewCell,TickDelegate {
         contentView.addSubview(label)
         
         label.numberOfLines = 0
-    label.translatesAutoresizingMaskIntoConstraints = false
+        label.translatesAutoresizingMaskIntoConstraints = false
         label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25).isActive = true
 //        label.leadingAnchor.constraint(equalTo: checkBox.trailingAnchor).isActive = true
         label.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true

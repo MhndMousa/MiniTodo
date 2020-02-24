@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		5931272E24015A5600552104 /* UserDefaults+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5931272D24015A5600552104 /* UserDefaults+Extensions.swift */; };
 		5931273024015D5A00552104 /* SystemColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5931272F24015D5A00552104 /* SystemColors.swift */; };
+		5931273224016B4800552104 /* ListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5931273124016B4800552104 /* ListTableViewController.swift */; };
+		593127342401833500552104 /* GoalSetterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593127332401833500552104 /* GoalSetterViewController.swift */; };
+		59C2872D2402101C00D98A03 /* GoalSetterViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C2872C2402101C00D98A03 /* GoalSetterViewController2.swift */; };
+		59C2872F24026EAF00D98A03 /* CircleShadowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C2872E24026EAF00D98A03 /* CircleShadowButton.swift */; };
 		59C8219123FF9E320029554F /* TodoStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C8219023FF9E320029554F /* TodoStatus.swift */; };
 		59C8219323FF9E540029554F /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C8219223FF9E540029554F /* Todo.swift */; };
 		59C8219523FF9E630029554F /* TodoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C8219423FF9E630029554F /* TodoList.swift */; };
@@ -46,6 +50,10 @@
 /* Begin PBXFileReference section */
 		5931272D24015A5600552104 /* UserDefaults+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Extensions.swift"; sourceTree = "<group>"; };
 		5931272F24015D5A00552104 /* SystemColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemColors.swift; sourceTree = "<group>"; };
+		5931273124016B4800552104 /* ListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTableViewController.swift; sourceTree = "<group>"; };
+		593127332401833500552104 /* GoalSetterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalSetterViewController.swift; sourceTree = "<group>"; };
+		59C2872C2402101C00D98A03 /* GoalSetterViewController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalSetterViewController2.swift; sourceTree = "<group>"; };
+		59C2872E24026EAF00D98A03 /* CircleShadowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CircleShadowButton.swift; path = View/CircleShadowButton.swift; sourceTree = "<group>"; };
 		59C8219023FF9E320029554F /* TodoStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoStatus.swift; sourceTree = "<group>"; };
 		59C8219223FF9E540029554F /* Todo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
 		59C8219423FF9E630029554F /* TodoList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoList.swift; sourceTree = "<group>"; };
@@ -98,6 +106,9 @@
 			isa = PBXGroup;
 			children = (
 				59CF07B623FE85A300A9C738 /* ViewController.swift */,
+				593127332401833500552104 /* GoalSetterViewController.swift */,
+				59C2872C2402101C00D98A03 /* GoalSetterViewController2.swift */,
+				5931273124016B4800552104 /* ListTableViewController.swift */,
 				59C8219E23FFA0EB0029554F /* TableViewCell.swift */,
 				59C8219623FF9E890029554F /* Viewcontroller+UISearchDelegate.swift */,
 				59C8219823FF9EB00029554F /* ViewController+DargDropDelegate.swift */,
@@ -149,6 +160,7 @@
 				59CF07BB23FE85A400A9C738 /* Assets.xcassets */,
 				59CF07BD23FE85A400A9C738 /* LaunchScreen.storyboard */,
 				59CF07C023FE85A400A9C738 /* Info.plist */,
+				59C2872E24026EAF00D98A03 /* CircleShadowButton.swift */,
 			);
 			path = Todo;
 			sourceTree = "<group>";
@@ -307,11 +319,15 @@
 				59CF07B723FE85A300A9C738 /* ViewController.swift in Sources */,
 				59C8219123FF9E320029554F /* TodoStatus.swift in Sources */,
 				59C8219B23FF9EC20029554F /* Datasource.swift in Sources */,
+				5931273224016B4800552104 /* ListTableViewController.swift in Sources */,
+				593127342401833500552104 /* GoalSetterViewController.swift in Sources */,
+				59C2872F24026EAF00D98A03 /* CircleShadowButton.swift in Sources */,
 				59CF07B323FE85A300A9C738 /* AppDelegate.swift in Sources */,
 				59C8219F23FFA0EB0029554F /* TableViewCell.swift in Sources */,
 				59C8219723FF9E890029554F /* Viewcontroller+UISearchDelegate.swift in Sources */,
 				59C8219523FF9E630029554F /* TodoList.swift in Sources */,
 				5931272E24015A5600552104 /* UserDefaults+Extensions.swift in Sources */,
+				59C2872D2402101C00D98A03 /* GoalSetterViewController2.swift in Sources */,
 				59CF07B523FE85A300A9C738 /* SceneDelegate.swift in Sources */,
 				59C8219323FF9E540029554F /* Todo.swift in Sources */,
 			);

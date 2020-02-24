@@ -18,7 +18,7 @@ class ViewController: UIViewController{
     var todoList = TodoList()
     var searchController = UISearchController(searchResultsController: nil)
     var tableView: UITableView!
-    var previousColor : UIColor!
+    var cell : UITableViewCell?
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.barTintColor = self.view.backgroundColor
@@ -169,8 +169,13 @@ class ViewController: UIViewController{
         
         SystemColors.allCases.forEach { (color) in
             alert.addAction(UIAlertAction(title: color.rawValue, style: .default, handler: { (_) in
-                UserDefaults.standard.setColor(color: color.color, forKey: "tintColor")
-                self.navigationController?.view.tintColor = color.color
+//                UserDefaults.standard.setColor(color: color.color, forKey: "tintColor")
+                
+//                self.navigationController?.view.tintColor = color.color
+                self.view.backgroundColor = color.color
+                self.cell?.backgroundColor = color.color
+                self.navigationController?.navigationBar.barTintColor = color.color
+
             }))
         }
         

@@ -265,8 +265,7 @@ extension ListTableViewController: UITableViewDropDelegate,UITableViewDragDelega
         let root = ViewController()
         root.view.backgroundColor = cell.backgroundColor
         root.title = cell.textLabel?.text
-        root.previousColor = self.view.backgroundColor
-        
+        root.cell = cell
         
         self.navigationController?.pushViewController(root, animated: true)
     }
