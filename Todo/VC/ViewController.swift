@@ -11,14 +11,18 @@ import UIKit
 
 class ViewController: UIViewController{
     
-    typealias TodoDataSource = UITableViewDiffableDataSource<TodoStatus, Todo>
+//    typealias TodoDataSource = UITableViewDiffableDataSource<TodoStatus, Todo>
     typealias TodoSnapshot = NSDiffableDataSourceSnapshot<TodoStatus, Todo>
     let cellId = "cell"
-    var datasource :  TodoDataSource!
+    var datasource :  DataSource!
     var todoList = TodoList()
     var searchController = UISearchController(searchResultsController: nil)
     var tableView: UITableView!
-
+    var previousColor : UIColor!
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.barTintColor = self.view.backgroundColor
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +31,7 @@ class ViewController: UIViewController{
         configureDataSource()
         applySnapshot()
         configureNavigationBar()
-//        configureToolbar()
+        configureToolbar()
     }
 
     
@@ -47,6 +51,7 @@ class ViewController: UIViewController{
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.delegate = self
+        searchController.searchBar.scopeButtonTitles = ["Unfinished","Finished","Both"]
         navigationItem.searchController = searchController
         definesPresentationContext = true
         
@@ -57,13 +62,15 @@ class ViewController: UIViewController{
         let addItem = UIBarButtonItem(image: UIImage(systemName: "plus.circle.fill")!, style: .plain, target: self, action:  #selector(addTodo))
         let searchItem =  UIBarButtonItem(image: UIImage(systemName: "magnifyingglass.circle.fill"), style: .plain, target: self, action: #selector(toggleSearch))
         let settingItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle.fill")!,style: .plain, target: self, action: #selector(changeColor))
-        self.navigationItem.rightBarButtonItems = [settingItem]
-        self.navigationItem.leftBarButtonItems  = [addItem, searchItem]
+//        self.navigationItem.rightBarButtonItems = [settingItem]
+//        self.navigationItem.leftBarButtonItems  = [addItem, searchItem]
+        self.navigationItem.rightBarButtonItem = settingItem
     }
     
     
     fileprivate func configureTable() {
-        self.tableView = UITableView(frame: view.frame, style: .insetGrouped)
+        self.tableView = UITableView(frame: view.frame, style: .grouped)
+        self.tableView.separatorColor = .clear
         self.tableView.register(TableViewCell.self, forCellReuseIdentifier: cellId)
         self.tableView.dragInteractionEnabled = true
         self.tableView.dragDelegate = self
@@ -76,7 +83,7 @@ class ViewController: UIViewController{
     
     // Configure data source and fill resuable cells
     fileprivate func configureDataSource() {
-        datasource =  DataSource(tableView: self.tableView) { (tableView, indexPath, todo) -> TableViewCell? in
+        datasource = DataSource(tableView: self.tableView) { (tableView, indexPath, todo) -> TableViewCell? in
             let cell = self.tableView.dequeueReusableCell(withIdentifier: self.cellId, for: indexPath) as! TableViewCell
             cell.todo = todo
             return cell
@@ -85,9 +92,9 @@ class ViewController: UIViewController{
      
      // #TODO: Add core data integration
      fileprivate func populateArray() {
-         for i in 1...6
+         for i in 1...60
          {
-             todoList.addItem(Todo(string: String(i), status: .unfinished), at: 0)
+            todoList.addItem(Todo(string: String(repeating: "AAA", count: i), status: .unfinished), at: 0)
          }
          todoList.addItem(Todo(string: String(90), status: .finished), at: 0)
      }
@@ -95,11 +102,11 @@ class ViewController: UIViewController{
      // Initial snapshot
      fileprivate func applySnapshot() {
         applySnapshotChanges(self.todoList.list)
-        self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+//        self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
      }
     
     func applySnapshotChanges(_ array: [Todo]) {
-         let finished =      array.filter({$0.status == .finished})
+         let finished =      array.filter({$0.status ==  .finished })
          let unfinished =    array.filter({$0.status == .unfinished})
          
          var snapshot = TodoSnapshot()
@@ -112,7 +119,7 @@ class ViewController: UIViewController{
     func promtTodo(){
         
         // Note to self not to forget how DispatchGroup works
-        // Number of entries in the stack determain how long the dispatch will hold
+        // Number of entries in the stack determane how long the dispatch will hold
         
         // Using Dispatch Group to wait for user input then append it to the list
         let disptach = DispatchGroup()

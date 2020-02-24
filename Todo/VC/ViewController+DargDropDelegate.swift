@@ -76,11 +76,34 @@ extension ViewController: UITableViewDropDelegate,UITableViewDragDelegate, UITab
         guard let selectedItemIdentifier = self.datasource.itemIdentifier(for: indexPath) else {print("error");return}
         guard let cell = tableView.cellForRow(at: indexPath) as? TableViewCell else {return}
         
-        cell.changeAttributedText(string: selectedItemIdentifier.string, status: selectedItemIdentifier.status.opposite)
-
-        applySnapshotChanges(todoList.list)
+//        cell.changeAttributedText(string: selectedItemIdentifier.string, status: selectedItemIdentifier.status.opposite)
+//        applySnapshotChanges(todoList.list)
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        let alert = UIAlertController(title: "Change the shit", message: nil, preferredStyle: .alert)
+        alert.addTextField {
+            $0.text = selectedItemIdentifier.string
+        }
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (_) in
+//            selectedItemIdentifier.string = alert.textFields![0].text!
+//            self.todoList.changeText(to: alert.textFields![0].text!, index: indexPath.row)
+            self.todoList.changeText(of: selectedItemIdentifier, to:alert.textFields![0].text!)
+            self.tableView.reloadData()
+            tableView.setNeedsLayout()
+            tableView.layoutIfNeeded()
+//            cell.setNeedsLayout()
+//            cell.layoutIfNeeded()
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
+        
+        
     }
-
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 1000
+    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
   
 }

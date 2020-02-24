@@ -39,8 +39,9 @@ class TableViewCell: UITableViewCell,TickDelegate {
         contentView.addSubview(checkBox)
         contentView.addSubview(label)
         
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+        label.numberOfLines = 0
+    label.translatesAutoresizingMaskIntoConstraints = false
+        label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25).isActive = true
 //        label.leadingAnchor.constraint(equalTo: checkBox.trailingAnchor).isActive = true
         label.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
         label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
@@ -67,7 +68,7 @@ class TableViewCell: UITableViewCell,TickDelegate {
             
         case .finished:
            let attributes = [NSAttributedString.Key.strokeColor :      UIColor.darkGray,
-                             NSAttributedString.Key.foregroundColor:   UIColor.lightGray,
+                             NSAttributedString.Key.foregroundColor:   UIColor.secondaryLabel,
 //                             NSAttributedString.Key.font:              UIFont.systemFont(ofSize: UIFont.systemFontSize, weight: .ultraLight)]
                              NSAttributedString.Key.font:              UIFont.preferredFont(forTextStyle: .caption1)]
            let text = NSMutableAttributedString(string: string, attributes: attributes)
