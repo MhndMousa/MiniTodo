@@ -32,4 +32,7 @@ enum SystemColors:String, CaseIterable {
         case .systemIndigo : return UIColor.systemIndigo
         }
     }
+    static func random() -> UIColor{
+        return SystemColors.allCases.randomElement()!.color
+    }
 }
