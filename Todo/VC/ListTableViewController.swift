@@ -168,9 +168,17 @@ class ListTableViewController: UITableViewController {
         showImage(false)
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.barTintColor = self.view.backgroundColor
+        self.navigationController?.navigationBar.titleTextAttributes      = [.foregroundColor: UIColor.secondaryLabel]
+        self.navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor: UIColor.secondaryLabel]
+        self.navigationController?.navigationBar.tintColor = .secondaryLabel
+        
+    }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.navigationController?.navigationBar.barTintColor = self.view.backgroundColor
+//        self.navigationController?.navigationBar.tintColor
         showImage(true)
     }
 

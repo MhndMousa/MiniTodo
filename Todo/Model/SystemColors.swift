@@ -8,28 +8,28 @@
 
 import UIKit
 enum SystemColors:String, CaseIterable {
-    case systemRed
-    case systemGreen
-    case systemBlue
-    case systemOrange
-    case systemYellow
-    case systemPink
-    case systemPurple
-    case systemTeal
-    case systemIndigo
+    case red
+    case green
+    case blue
+    case orange
+//    case systemYellow
+    case pink
+    case purple
+//    case systemTeal
+    case indigo
     
     
     var color : UIColor{
         switch self {
-        case .systemRed : return UIColor.systemRed
-        case .systemGreen : return UIColor.systemGreen
-        case .systemBlue : return UIColor.systemBlue
-        case .systemOrange : return UIColor.systemOrange
-        case .systemYellow : return UIColor.systemYellow
-        case .systemPink : return UIColor.systemPink
-        case .systemPurple : return UIColor.systemPurple
-        case .systemTeal : return UIColor.systemTeal
-        case .systemIndigo : return UIColor.systemIndigo
+        case .red : return UIColor.systemRed
+        case .green : return UIColor.systemGreen
+        case .blue : return UIColor.systemBlue
+        case .orange : return UIColor.systemOrange
+//        case .systemYellow : return UIColor.systemYellow
+        case .pink : return UIColor.systemPink
+        case .purple : return UIColor.systemPurple
+//        case .systemTeal : return UIColor.systemTeal
+        case .indigo : return UIColor.systemIndigo
         }
     }
     static func random() -> UIColor{

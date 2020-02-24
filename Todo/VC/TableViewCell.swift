@@ -66,14 +66,14 @@ class TableViewCell: UITableViewCell,TickDelegate {
             
         case .finished:
            let attributes = [NSAttributedString.Key.strokeColor :      UIColor.darkGray,
-                             NSAttributedString.Key.foregroundColor:   UIColor.secondaryLabel,
+                             NSAttributedString.Key.foregroundColor:   UIColor.systemGray2,
 //                             NSAttributedString.Key.font:              UIFont.systemFont(ofSize: UIFont.systemFontSize, weight: .ultraLight)]
                              NSAttributedString.Key.font:              UIFont.preferredFont(forTextStyle: .caption1)]
            let text = NSMutableAttributedString(string: string, attributes: attributes)
            text.addAttribute(NSAttributedString.Key.strikethroughStyle,value: 2, range:NSMakeRange(0, string.count))
            return text
         case .unfinished:
-            let attributes = [NSAttributedString.Key.foregroundColor:   UIColor.systemBackground,
+            let attributes = [NSAttributedString.Key.foregroundColor:   UIColor.white,
                               NSAttributedString.Key.font:              UIFont.preferredFont(forTextStyle: .caption1)]
 //                              NSAttributedString.Key.font:              UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .body), weight: .ultraLight)]
             let text = NSMutableAttributedString(string: string, attributes: attributes)

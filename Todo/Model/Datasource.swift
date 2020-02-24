@@ -12,9 +12,9 @@ import UIKit
 
 
 class DataSource : UITableViewDiffableDataSource<TodoStatus, Todo>{
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return TodoStatus(rawValue: section)?.description
-    }
+//    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        return TodoStatus(rawValue: section)?.description
+//    }
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }

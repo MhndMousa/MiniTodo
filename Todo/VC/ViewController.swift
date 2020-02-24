@@ -22,6 +22,17 @@ class ViewController: UIViewController{
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.barTintColor = self.view.backgroundColor
+        self.navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
+        self.navigationController?.navigationBar.tintColor = .white
+        
+    }
+    override var preferredStatusBarStyle: UIStatusBarStyle{
+        return .lightContent
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.setNeedsStatusBarAppearanceUpdate()
     }
     
     override func viewDidLoad() {
@@ -31,7 +42,7 @@ class ViewController: UIViewController{
         configureDataSource()
         applySnapshot()
         configureNavigationBar()
-        configureToolbar()
+//        configureToolbar()
     }
 
     
@@ -64,7 +75,7 @@ class ViewController: UIViewController{
         let settingItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle.fill")!,style: .plain, target: self, action: #selector(changeColor))
 //        self.navigationItem.rightBarButtonItems = [settingItem]
 //        self.navigationItem.leftBarButtonItems  = [addItem, searchItem]
-        self.navigationItem.rightBarButtonItem = settingItem
+        self.navigationItem.rightBarButtonItems = [addItem,settingItem]
     }
     
     
@@ -94,9 +105,9 @@ class ViewController: UIViewController{
      fileprivate func populateArray() {
          for i in 1...60
          {
-            todoList.addItem(Todo(string: String(repeating: "AAA", count: i), status: .unfinished), at: 0)
+            todoList.appendItem(Todo(string: String(repeating: "a", count: i), status: .unfinished))
          }
-         todoList.addItem(Todo(string: String(90), status: .finished), at: 0)
+         todoList.appendItem(Todo(string: String(90), status: .finished))
      }
      
      // Initial snapshot
@@ -168,10 +179,7 @@ class ViewController: UIViewController{
         let alert = UIAlertController(title: "Change Color" , message: nil, preferredStyle: .actionSheet)
         
         SystemColors.allCases.forEach { (color) in
-            alert.addAction(UIAlertAction(title: color.rawValue, style: .default, handler: { (_) in
-//                UserDefaults.standard.setColor(color: color.color, forKey: "tintColor")
-                
-//                self.navigationController?.view.tintColor = color.color
+            alert.addAction(UIAlertAction(title: color.rawValue.capitalized, style: .default, handler: { (_) in
                 self.view.backgroundColor = color.color
                 self.cell?.backgroundColor = color.color
                 self.navigationController?.navigationBar.barTintColor = color.color

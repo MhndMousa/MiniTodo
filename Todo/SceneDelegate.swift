@@ -33,11 +33,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //        let initialViewController = ListTableViewController()
         let initialViewController = UINavigationController(rootViewController: ListTableViewController())
 //        initialViewController.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        initialViewController.view.tintColor                         = color != nil ? color : .systemOrange
+        initialViewController.view.tintColor                         = color 
         initialViewController.navigationBar.shadowImage              = UIImage()
 //        initialViewController.navigationBar.isTranslucent            = true
-        initialViewController.navigationBar.titleTextAttributes      = [.foregroundColor: UIColor.secondaryLabel]
-        initialViewController.navigationBar.largeTitleTextAttributes = [.foregroundColor: UIColor.secondaryLabel]
         initialViewController.navigationBar.prefersLargeTitles       = true
         
 //        initialViewController.navigationItem.largeTitleDisplayMode = .always

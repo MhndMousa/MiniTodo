@@ -15,7 +15,7 @@ extension ViewController: UISearchBarDelegate,UISearchResultsUpdating{
         
         
         let filteredArray = self.todoList.list.filter {
-            $0.string.contains(searchBar.text!) &&
+            $0.string.lowercased().contains(searchBar.text!.lowercased()) &&
             ($0.status.rawValue == index || index == 2)
             
         }
