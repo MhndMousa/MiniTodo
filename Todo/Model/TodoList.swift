@@ -32,6 +32,9 @@ struct TodoList : Hashable {
         list[index].status = status
     }
     
+    mutating func changeText(of todo:Todo, to newString: String){
+        list[list.firstIndex(of: todo)!].string = newString
+    }
     
     /**
            A helper function that serves as an interface to the data model,
