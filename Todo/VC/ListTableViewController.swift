@@ -170,6 +170,7 @@ class ListTableViewController: UITableViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        self.navigationController?.navigationBar.barTintColor = self.view.backgroundColor
         showImage(true)
     }
 
@@ -264,6 +265,8 @@ extension ListTableViewController: UITableViewDropDelegate,UITableViewDragDelega
         let root = ViewController()
         root.view.backgroundColor = cell.backgroundColor
         root.title = cell.textLabel?.text
+        root.previousColor = self.view.backgroundColor
+        
         
         self.navigationController?.pushViewController(root, animated: true)
     }

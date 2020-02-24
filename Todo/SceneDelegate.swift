@@ -23,10 +23,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         
         let userDefaults = UserDefaults.standard
-        let color = userDefaults.colorForKey(key: "tintColor")
-        let initialViewController = UINavigationController(rootViewController: ViewController())
-        initialViewController.view.tintColor = color != nil ? color : .systemOrange
+//        var color = userDefaults.colorForKey(key: "tintColor")
+        var color : UIColor = .secondaryLabel
         
+        
+//        let initialViewController = UINavigationController(rootViewController: ViewController())
+//        let initialViewController = GoalSetterViewController()
+//        let initialViewController = GoalSetterViewController2()
+//        let initialViewController = ListTableViewController()
+        let initialViewController = UINavigationController(rootViewController: ListTableViewController())
+//        initialViewController.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        initialViewController.view.tintColor                         = color != nil ? color : .systemOrange
+        initialViewController.navigationBar.shadowImage              = UIImage()
+//        initialViewController.navigationBar.isTranslucent            = true
+        initialViewController.navigationBar.titleTextAttributes      = [.foregroundColor: UIColor.secondaryLabel]
+        initialViewController.navigationBar.largeTitleTextAttributes = [.foregroundColor: UIColor.secondaryLabel]
+        initialViewController.navigationBar.prefersLargeTitles       = true
+        
+//        initialViewController.navigationItem.largeTitleDisplayMode = .always
+//        initialViewController.navigationBar.prefersLargeTitles = true
         
         window?.rootViewController = initialViewController
         window?.makeKeyAndVisible()
