@@ -113,7 +113,20 @@ class ViewController: UIViewController{
      fileprivate func populateArray() {
         Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").document(self.list.uid!).collection("Todo").addSnapshotListener { (snapshot, error) in
             guard let documents = snapshot?.documents else {return}
-            self.todoList.list = documents.map({Todo($0.data(),id: $0.documentID)})
+            
+            
+            var newDocuments =  documents.map{Todo($0.data(),id: $0.documentID)}
+            newDocuments.removeAll { todo -> Bool in
+                self.todoList.list.map({$0.uid}).contains(todo.uid)
+            }
+            print(newDocuments)
+//            newDocuments.forEach({self.array.append($0)})
+            
+            
+            
+            
+//            let newDocuments = documents.map({Todo($0.data(),id: $0.documentID)}).filter({!self.todoList.list.contains($0)})
+            newDocuments.forEach({self.todoList.list.append($0)})
             self.applySnapshot()
         }
      }

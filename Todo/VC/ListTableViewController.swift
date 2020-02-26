@@ -158,7 +158,13 @@ class ListTableViewController: UITableViewController {
         
             print(snapshot?.documents)
             guard let documents = snapshot?.documents  else {return}
-            self.array = documents.map{List($0.data(),id: $0.documentID)}
+            var newDocuments =  documents.map{List($0.data(),id: $0.documentID)}
+            newDocuments.removeAll { list -> Bool in
+                self.array.map({$0.uid}).contains(list.uid)
+            }
+            print(newDocuments)
+            newDocuments.forEach({self.array.append($0)})
+            
             self.applySnapshotChanges(self.array)
         }
     }
@@ -358,6 +364,9 @@ class List: NSObject,Codable, NSItemProviderReading, NSItemProviderWriting {
     var name: String!
     var color : Color!
     var uid:String?
+    static func == (l: List, r:List) -> Bool{
+        return l.uid == r.uid
+    }
     override init() {
         self.name = ""
         self.color = Color(color: UIColor.white)
