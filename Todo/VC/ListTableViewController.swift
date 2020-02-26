@@ -185,6 +185,7 @@ class ListTableViewController: UITableViewController {
         self.navigationController?.navigationBar.titleTextAttributes      = [.foregroundColor: UIColor.secondaryLabel]
         self.navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor: UIColor.secondaryLabel]
         self.navigationController?.navigationBar.tintColor = .secondaryLabel
+        self.tableView.reloadData()
         
     }
     override func viewDidAppear(_ animated: Bool) {
