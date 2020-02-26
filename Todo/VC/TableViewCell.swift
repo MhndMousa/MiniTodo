@@ -14,7 +14,7 @@ class TableViewCell: UITableViewCell,TickDelegate {
             
 //            let indexPath = superview.indexPath(for: self)
 //            superview.selectRow(at: indexPath, animated: true, scrollPosition: .bottom)
-            changeAttributedText(string: todo.string, status: todo.status.opposite)
+            changeAttributedText(string: todo.text, status: todo.status.opposite)
             
         }
     }
@@ -22,9 +22,9 @@ class TableViewCell: UITableViewCell,TickDelegate {
 
     var todo : Todo!{
         didSet{
-            print(self.todo.string, " Was added")
+            print(self.todo.text, " Was added")
             backgroundColor = .clear
-            label.attributedText = makeAttributedText(string: todo.string, status: todo.status)
+            label.attributedText = makeAttributedText(string: todo.text, status: todo.status)
             checkBox.isClicked = self.todo.status == .finished
             
         }

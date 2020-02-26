@@ -7,7 +7,8 @@
 //
 
 import UIKit
-
+import FirebaseFirestore
+import FirebaseAuth
 
 class ViewController: UIViewController{
     
@@ -18,7 +19,14 @@ class ViewController: UIViewController{
     var todoList = TodoList()
     var searchController = UISearchController(searchResultsController: nil)
     var tableView: UITableView!
-    var cell : UITableViewCell?
+//    var cell : UITableViewCell?
+    var list : List!{
+        didSet{
+            view.backgroundColor = self.list.color.color
+            title = self.list.name
+        }
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.barTintColor = self.view.backgroundColor
@@ -103,11 +111,11 @@ class ViewController: UIViewController{
      
      // #TODO: Add core data integration
      fileprivate func populateArray() {
-         for i in 1...60
-         {
-            todoList.appendItem(Todo(string: String(repeating: "a", count: i), status: .unfinished))
-         }
-         todoList.appendItem(Todo(string: String(90), status: .finished))
+        Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").document(self.list.uid!).collection("Todo").addSnapshotListener { (snapshot, error) in
+            guard let documents = snapshot?.documents else {return}
+            self.todoList.list = documents.map({Todo($0.data(),id: $0.documentID)})
+            self.applySnapshot()
+        }
      }
      
      // Initial snapshot
@@ -140,7 +148,7 @@ class ViewController: UIViewController{
         let alert = UIAlertController(title: "Add Todo", message: nil , preferredStyle: .alert)
         alert.addTextField {$0.placeholder = "Clean the dishes"}
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (_) in
-            todo.string = alert.textFields![0].text!
+            todo.text = alert.textFields![0].text!
             todo.status = .unfinished
             disptach.leave() // Leave for every entry
         }))
@@ -150,8 +158,9 @@ class ViewController: UIViewController{
 
         // Will trigger once number of .enter() = number of .leave()
         disptach.notify(queue: .main) {
-            self.todoList.appendItem(todo)
-            self.applySnapshotChanges(self.todoList.list)
+            let document = Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").document(self.list.uid!).collection("Todo").document()
+            document.setData(todo.dictionary)
+            todo.uid = document.documentID
         }
         
     }
@@ -181,8 +190,11 @@ class ViewController: UIViewController{
         SystemColors.allCases.forEach { (color) in
             alert.addAction(UIAlertAction(title: color.rawValue.capitalized, style: .default, handler: { (_) in
                 self.view.backgroundColor = color.color
-                self.cell?.backgroundColor = color.color
+                self.list.color.color = color.color
                 self.navigationController?.navigationBar.barTintColor = color.color
+                Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").document(self.list.uid!).setData(
+                    ["color":color.rawValue]
+                    , merge: true)
 
             }))
         }

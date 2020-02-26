@@ -12,16 +12,30 @@ import MobileCoreServices
 class Todo: NSObject,Codable, NSItemProviderReading, NSItemProviderWriting{
      
     
-    let id = UUID()
-    var string:String
-    var status: TodoStatus
+    var uid: String!
+    var text:String!
+    var status: TodoStatus!
     override init() {
-        self.string = ""
+        self.uid = UUID().uuidString
+        self.text = ""
         self.status = .unfinished
     }
     init(string: String, status: TodoStatus) {
-        self.string = string
+        self.uid = UUID().uuidString
+        self.text = string
         self.status = status
+    }
+    init(_ d :[String:Any], id:String){
+        self.uid = id
+        self.text = d["text"] as? String ?? ""
+        self.status = TodoStatus(rawValue: d["status"] as! Int) ?? .unfinished
+        
+    }
+    var dictionary : [String:Any]{
+        return [
+            "text" : self.text,
+            "status" : self.status.rawValue
+        ]
     }
     
     static var writableTypeIdentifiersForItemProvider: [String]{

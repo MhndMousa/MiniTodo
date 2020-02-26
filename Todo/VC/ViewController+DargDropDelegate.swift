@@ -8,6 +8,8 @@
 
 import Foundation
 import UIKit
+import FirebaseAuth
+import FirebaseFirestore
 
 extension ViewController: UITableViewDropDelegate,UITableViewDragDelegate, UITableViewDelegate{
     func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
@@ -82,15 +84,19 @@ extension ViewController: UITableViewDropDelegate,UITableViewDragDelegate, UITab
         
         let alert = UIAlertController(title: "Change the shit", message: nil, preferredStyle: .alert)
         alert.addTextField {
-            $0.text = selectedItemIdentifier.string
+            $0.text = selectedItemIdentifier.text
         }
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (_) in
 //            selectedItemIdentifier.string = alert.textFields![0].text!
 //            self.todoList.changeText(to: alert.textFields![0].text!, index: indexPath.row)
             self.todoList.changeText(of: selectedItemIdentifier, to:alert.textFields![0].text!)
-            self.tableView.reloadData()
-            tableView.setNeedsLayout()
-            tableView.layoutIfNeeded()
+//            let document = Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").document(self.list.uid!).collection("Todo")
+            Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").document(self.list.uid!).collection("Todo").document(selectedItemIdentifier.uid).setData(
+                [
+                    "text" : alert.textFields![0].text!
+                ]
+                , merge: true)
+//            self.tableView.reloadData()
 //            cell.setNeedsLayout()
 //            cell.layoutIfNeeded()
         }))

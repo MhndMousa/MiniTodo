@@ -33,7 +33,7 @@ struct TodoList : Hashable {
     }
     
     mutating func changeText(of todo:Todo, to newString: String){
-        list[list.firstIndex(of: todo)!].string = newString
+        list[list.firstIndex(of: todo)!].text = newString
     }
     
     /**

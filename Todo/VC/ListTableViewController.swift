@@ -8,6 +8,8 @@
 
 import UIKit
 import MobileCoreServices
+import FirebaseAuth
+import FirebaseFirestore
 
 class ListTableViewCell: UITableViewCell {
     
@@ -81,7 +83,7 @@ class ListTableViewController: UITableViewController {
          disptach.enter()    // Increments the counter
          
          let todo = List()
-         let alert = UIAlertController(title: "Add Todo", message: nil , preferredStyle: .alert)
+         let alert = UIAlertController(title: "Add a list", message: nil , preferredStyle: .alert)
          alert.addTextField {$0.placeholder = "Clean the dishes"}
          alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (_) in
             todo.name = alert.textFields![0].text!
@@ -94,8 +96,8 @@ class ListTableViewController: UITableViewController {
 
          // Will trigger once number of .enter() = number of .leave()
          disptach.notify(queue: .main) {
-            self.array.append(todo)
-            self.applySnapshotChanges(self.array)
+            Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").addDocument(data: todo.dictionary)
+//            self.applySnapshotChanges(self.array)
          }
     }
     fileprivate func applySnapshotChanges(_ array: [List]) {
@@ -110,6 +112,8 @@ class ListTableViewController: UITableViewController {
     let imageView = UIImageView(image: #imageLiteral(resourceName: "yoda"))
     override func viewDidLoad() {
         super.viewDidLoad()
+        Auth.auth().signInAnonymously()
+        
         
         tableView = UITableView(frame: view.frame, style: .insetGrouped)
         tableView.register(ListTableViewCell.self, forCellReuseIdentifier: cellId)
@@ -140,10 +144,6 @@ class ListTableViewController: UITableViewController {
                imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor)
                ])
         
-        for _ in 0...3{
-            array.append(List(name: "adf", color: Color(color: SystemColors.random())))
-        }
-        
         
         
         datasource = ListDataSource(tableView: self.tableView, cellProvider: { (tableView, indexPath, list) -> ListTableViewCell? in
@@ -154,8 +154,13 @@ class ListTableViewController: UITableViewController {
             return cell
         })
         
-        applySnapshotChanges(array)
+        Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").addSnapshotListener { (snapshot, error) in
         
+            print(snapshot?.documents)
+            guard let documents = snapshot?.documents  else {return}
+            self.array = documents.map{List($0.data(),id: $0.documentID)}
+            self.applySnapshotChanges(self.array)
+        }
     }
 
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -271,9 +276,10 @@ extension ListTableViewController: UITableViewDropDelegate,UITableViewDragDelega
         tableView.deselectRow(at: indexPath, animated: true)
         
         let root = ViewController()
-        root.view.backgroundColor = cell.backgroundColor
-        root.title = cell.textLabel?.text
-        root.cell = cell
+//        root.view.backgroundColor = cell.backgroundColor
+//        root.title = cell.textLabel?.text
+//        root.cell = cell
+        root.list = (self.array[indexPath.row])
         
         self.navigationController?.pushViewController(root, animated: true)
     }
@@ -329,9 +335,29 @@ extension Color{
             alpha: 1)
     }
 }
+
+extension UIColor{
+    var colorString : String{
+        switch self.cgColor {
+        case UIColor.systemRed.cgColor: return "red"
+        case UIColor.systemGreen.cgColor: return "green"
+        case UIColor.systemBlue.cgColor: return "blue"
+        case UIColor.systemOrange.cgColor: return "orange"
+//        case UIColor.systemYellow.cgColor: return "systemYellow"
+        case UIColor.systemPink.cgColor: return "pink"
+        case UIColor.systemPurple.cgColor: return "purple"
+//        case UIColor.systemTeal.cgColor: return "systemTeal"
+        case UIColor.systemIndigo.cgColor: return "indigo"
+        default: return ""
+            
+        }
+        
+    }
+}
 class List: NSObject,Codable, NSItemProviderReading, NSItemProviderWriting {
     var name: String!
     var color : Color!
+    var uid:String?
     override init() {
         self.name = ""
         self.color = Color(color: UIColor.white)
@@ -340,6 +366,37 @@ class List: NSObject,Codable, NSItemProviderReading, NSItemProviderWriting {
         self.name = name
         self.color = color
     }
+    init(_ d :[String:Any]){
+        self.name = d["name"] as? String
+        
+        
+        if d["color"] as? String == "" ||  d["color"] == nil {
+            self.color = Color(color: SystemColors(rawValue: "green")!.color)
+        }else{
+            self.color = Color(color: SystemColors(rawValue: d["color"] as! String)!.color)
+        }
+         
+    }
+    init(_ d :[String:Any], id:String){
+        
+        self.uid = id
+        self.name = d["name"] as? String
+        
+        if d["color"] as? String == "" ||  d["color"] == nil {
+            self.color = Color(color: SystemColors(rawValue: "green")!.color)
+        }else{
+            self.color = Color(color: SystemColors(rawValue: d["color"] as! String)!.color)
+        }
+        
+    }
+    var dictionary : [String:String] {
+        return [
+            "name": self.name,
+            "color" : self.color!.color.colorString
+        ]
+    }
+    
+    
       static var writableTypeIdentifiersForItemProvider: [String]{
           return [(kUTTypeData) as String]
       }

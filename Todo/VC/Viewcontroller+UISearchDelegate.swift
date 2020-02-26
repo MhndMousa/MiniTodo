@@ -15,7 +15,7 @@ extension ViewController: UISearchBarDelegate,UISearchResultsUpdating{
         
         
         let filteredArray = self.todoList.list.filter {
-            $0.string.lowercased().contains(searchBar.text!.lowercased()) &&
+            $0.text.lowercased().contains(searchBar.text!.lowercased()) &&
             ($0.status.rawValue == index || index == 2)
             
         }
@@ -29,7 +29,7 @@ extension ViewController: UISearchBarDelegate,UISearchResultsUpdating{
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        let filteredArray = searchText.isEmpty ? self.todoList.list : self.todoList.list.filter { $0.string.contains(searchText)}
+        let filteredArray = searchText.isEmpty ? self.todoList.list : self.todoList.list.filter { $0.text.contains(searchText)}
         applySnapshotChanges(filteredArray)
     }
     
