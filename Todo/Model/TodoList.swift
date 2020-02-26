@@ -11,7 +11,7 @@ import UIKit
 
 
 struct TodoList : Hashable {
-    private(set) var list = [Todo]()
+    var list = [Todo]()
     /// The traditional method for rearranging rows in a table view.
     mutating func moveItem(at sourceIndex: Int, to destinationIndex: Int) {
         guard sourceIndex != destinationIndex else { return }
