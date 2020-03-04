@@ -111,11 +111,15 @@ class ViewController: UIViewController{
      
      // #TODO: Add core data integration
      fileprivate func populateArray() {
-        Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").document(self.list.uid!).collection("Todo").addSnapshotListener { (snapshot, error) in
+        Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").document(self.list.uid!).collection("Todo").whereField("visible", isEqualTo: true).addSnapshotListener { (snapshot, error) in
             guard let documents = snapshot?.documents else {return}
             
             
-            var newDocuments =  documents.map{Todo($0.data(),id: $0.documentID)}
+            var newDocuments =  documents.map{Todo($0.data(),id: $0.documentID,list: self.list)}
+            self.todoList.list.removeAll { todo -> Bool in
+                !newDocuments.map({$0.uid}).contains(todo.uid)
+            }
+
             newDocuments.removeAll { todo -> Bool in
                 self.todoList.list.map({$0.uid}).contains(todo.uid)
             }

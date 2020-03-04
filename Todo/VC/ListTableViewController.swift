@@ -161,15 +161,18 @@ class ListTableViewController: UITableViewController {
         
 
         g.notify(queue: .main) {
-        
-            Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").addSnapshotListener { (snapshot, error) in
+            Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").whereField("visible", isEqualTo: true).addSnapshotListener { (snapshot, error) in
 
                 print(snapshot?.documents)
                 guard let documents = snapshot?.documents  else {return}
                 var newDocuments =  documents.map{List($0.data(),id: $0.documentID)}
+                self.array.removeAll { list -> Bool in
+                    !newDocuments.map({$0.uid}).contains(list.uid)
+                }
                 newDocuments.removeAll { list -> Bool in
                     self.array.map({$0.uid}).contains(list.uid)
                 }
+
                 print(newDocuments)
                 newDocuments.forEach({self.array.append($0)})
                 
@@ -408,10 +411,11 @@ class List: NSObject,Codable, NSItemProviderReading, NSItemProviderWriting {
         }
         
     }
-    var dictionary : [String:String] {
+    var dictionary : [String:Any] {
         return [
-            "name": self.name,
-            "color" : self.color!.color.colorString
+            "name": self.name as! String,
+            "color" : self.color!.color.colorString as! String,
+            "visible" : true
         ]
     }
     
@@ -503,10 +507,14 @@ class ListDataSource : UITableViewDiffableDataSource<ListSection, List>{
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete{
+            
             if let identifierToDelete = itemIdentifier(for: indexPath) {
-                var snapshot = self.snapshot()
-                snapshot.deleteItems([identifierToDelete])
-                apply(snapshot)
+                Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").document(identifierToDelete.uid!).updateData(["visible":false]) { (error) in
+                    var snapshot = self.snapshot()
+                    snapshot.deleteItems([identifierToDelete])
+                    self.apply(snapshot)
+                }
+                
             }
         }
     }
