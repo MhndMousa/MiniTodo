@@ -15,6 +15,7 @@ class Todo: NSObject,Codable, NSItemProviderReading, NSItemProviderWriting{
     var uid: String!
     var text:String!
     var status: TodoStatus!
+    weak var list : List!
     override init() {
         self.uid = UUID().uuidString
         self.text = ""
@@ -31,10 +32,18 @@ class Todo: NSObject,Codable, NSItemProviderReading, NSItemProviderWriting{
         self.status = TodoStatus(rawValue: d["status"] as! Int) ?? .unfinished
         
     }
+    init(_ d :[String:Any], id:String, list: List){
+        self.uid = id
+        self.text = d["text"] as? String ?? ""
+        self.list = list
+        self.status = TodoStatus(rawValue: d["status"] as! Int) ?? .unfinished
+        
+    }
     var dictionary : [String:Any]{
         return [
             "text" : self.text,
-            "status" : self.status.rawValue
+            "status" : self.status.rawValue,
+            "visible" : true
         ]
     }
     

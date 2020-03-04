@@ -8,7 +8,8 @@
 
 import Foundation
 import UIKit
-
+import FirebaseFirestore
+import FirebaseAuth
 
 
 class DataSource : UITableViewDiffableDataSource<TodoStatus, Todo>{
@@ -54,9 +55,14 @@ class DataSource : UITableViewDiffableDataSource<TodoStatus, Todo>{
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete{
             if let identifierToDelete = itemIdentifier(for: indexPath) {
-                var snapshot = self.snapshot()
-                snapshot.deleteItems([identifierToDelete])
-                apply(snapshot)
+                Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").document(identifierToDelete.list.uid!).collection("Todo").document(identifierToDelete.uid).updateData(["visible":false]) { (error) in
+                    var snapshot = self.snapshot()
+                    snapshot.deleteItems([identifierToDelete])
+                    self.apply(snapshot)
+                }
+//                var snapshot = self.snapshot()
+//                snapshot.deleteItems([identifierToDelete])
+//                apply(snapshot)
             }
         }
     }
