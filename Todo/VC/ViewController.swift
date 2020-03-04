@@ -92,8 +92,8 @@ class ViewController: UIViewController{
         self.tableView.separatorColor = .clear
         self.tableView.register(TableViewCell.self, forCellReuseIdentifier: cellId)
         self.tableView.dragInteractionEnabled = true
-        self.tableView.dragDelegate = self
-        self.tableView.dropDelegate = self
+//        self.tableView.dragDelegate = self
+//        self.tableView.dropDelegate = self
         self.tableView.delegate = self
         self.tableView.tableFooterView = UIView()
         self.view = self.tableView

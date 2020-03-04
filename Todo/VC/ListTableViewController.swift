@@ -112,7 +112,12 @@ class ListTableViewController: UITableViewController {
     let imageView = UIImageView(image: #imageLiteral(resourceName: "yoda"))
     override func viewDidLoad() {
         super.viewDidLoad()
-        Auth.auth().signInAnonymously()
+        let g = DispatchGroup()
+        g.enter()
+        Auth.auth().signInAnonymously { (res, error) in
+            g.leave()
+            print(res?.additionalUserInfo?.username)
+        }
         
         
         tableView = UITableView(frame: view.frame, style: .insetGrouped)
@@ -154,18 +159,22 @@ class ListTableViewController: UITableViewController {
             return cell
         })
         
-        Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").addSnapshotListener { (snapshot, error) in
+
+        g.notify(queue: .main) {
         
-            print(snapshot?.documents)
-            guard let documents = snapshot?.documents  else {return}
-            var newDocuments =  documents.map{List($0.data(),id: $0.documentID)}
-            newDocuments.removeAll { list -> Bool in
-                self.array.map({$0.uid}).contains(list.uid)
+            Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").addSnapshotListener { (snapshot, error) in
+
+                print(snapshot?.documents)
+                guard let documents = snapshot?.documents  else {return}
+                var newDocuments =  documents.map{List($0.data(),id: $0.documentID)}
+                newDocuments.removeAll { list -> Bool in
+                    self.array.map({$0.uid}).contains(list.uid)
+                }
+                print(newDocuments)
+                newDocuments.forEach({self.array.append($0)})
+                
+                self.applySnapshotChanges(self.array)
             }
-            print(newDocuments)
-            newDocuments.forEach({self.array.append($0)})
-            
-            self.applySnapshotChanges(self.array)
         }
     }
 
