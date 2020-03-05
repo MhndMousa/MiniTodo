@@ -1,17 +1,18 @@
 //
-//  Datasource.swift
+//  ListDataSource.swift
 //  Todo
 //
-//  Created by Muhannad Alnemer on 2/20/20.
+//  Created by Muhannad Alnemer on 3/4/20.
 //  Copyright © 2020 Muhannad Alnemer. All rights reserved.
 //
 
-import Foundation
 import UIKit
 import CloudKit
 
-
-class DataSource : UITableViewDiffableDataSource<TodoStatus, Todo>{
+class ListDataSource : UITableViewDiffableDataSource<ListSection, List>{
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return ListSection(rawValue: section)?.description
+    }
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
@@ -50,17 +51,20 @@ class DataSource : UITableViewDiffableDataSource<TodoStatus, Todo>{
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete{
+            
             if let identifierToDelete = itemIdentifier(for: indexPath) {
                 CKContainer.default().privateCloudDatabase.delete(withRecordID: identifierToDelete.id) { (_, _) in
-                   print("Deleted")
-               }
-                
-//                Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").document(identifierToDelete.list.uid!).collection("Todo").document(identifierToDelete.uid).updateData(["visible":false]) { (error) in
+                    print("Deleted")
+                }
+               
+//                 Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").document(identifierToDelete.uid!).updateData(["visible":false]) { (error) in
 //                    var snapshot = self.snapshot()
 //                    snapshot.deleteItems([identifierToDelete])
 //                    self.apply(snapshot)
 //                }
+                
             }
         }
     }
 }
+

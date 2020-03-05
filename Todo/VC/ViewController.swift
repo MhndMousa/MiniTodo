@@ -7,22 +7,19 @@
 //
 
 import UIKit
-import FirebaseFirestore
-import FirebaseAuth
+import CloudKit
 
 class ViewController: UIViewController{
     
-//    typealias TodoDataSource = UITableViewDiffableDataSource<TodoStatus, Todo>
     typealias TodoSnapshot = NSDiffableDataSourceSnapshot<TodoStatus, Todo>
     let cellId = "cell"
     var datasource :  DataSource!
-    var todoList = TodoList()
+//    var todoList : [Todo] = []
     var searchController = UISearchController(searchResultsController: nil)
     var tableView: UITableView!
-//    var cell : UITableViewCell?
     var list : List!{
         didSet{
-            view.backgroundColor = self.list.color.color
+            view.backgroundColor = self.list.color
             title = self.list.name
         }
     }
@@ -48,7 +45,7 @@ class ViewController: UIViewController{
         configureTable()
         populateArray()
         configureDataSource()
-        applySnapshot()
+//        applySnapshot()
         configureNavigationBar()
 //        configureToolbar()
     }
@@ -81,8 +78,7 @@ class ViewController: UIViewController{
         let addItem = UIBarButtonItem(image: UIImage(systemName: "plus.circle.fill")!, style: .plain, target: self, action:  #selector(addTodo))
         let searchItem =  UIBarButtonItem(image: UIImage(systemName: "magnifyingglass.circle.fill"), style: .plain, target: self, action: #selector(toggleSearch))
         let settingItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle.fill")!,style: .plain, target: self, action: #selector(changeColor))
-//        self.navigationItem.rightBarButtonItems = [settingItem]
-//        self.navigationItem.leftBarButtonItems  = [addItem, searchItem]
+        
         self.navigationItem.rightBarButtonItems = [addItem,settingItem]
     }
     
@@ -111,34 +107,34 @@ class ViewController: UIViewController{
      
      // #TODO: Add core data integration
      fileprivate func populateArray() {
-        Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").document(self.list.uid!).collection("Todo").whereField("visible", isEqualTo: true).addSnapshotListener { (snapshot, error) in
-            guard let documents = snapshot?.documents else {return}
-            
-            
-            var newDocuments =  documents.map{Todo($0.data(),id: $0.documentID,list: self.list)}
-            self.todoList.list.removeAll { todo -> Bool in
-                !newDocuments.map({$0.uid}).contains(todo.uid)
+        guard var list = self.list.todoList else {return}
+        let recordsIDs = list.map{$0.id}
+        let operation = CKFetchRecordsOperation(recordIDs: recordsIDs)
+        operation.qualityOfService = .utility
+        operation.fetchRecordsCompletionBlock = { record, error in
+            var notes = record?.values.map(Todo.init) ?? []
+            DispatchQueue.main.async {
+                list.removeAll { todo -> Bool in
+                    !notes.map({$0.id}).contains(todo.id)
+                }
+                notes.removeAll { todo -> Bool in
+                    list.map({$0.id}).contains(todo.id)
+                }
+                self.applySnapshot(list)
             }
-
-            newDocuments.removeAll { todo -> Bool in
-                self.todoList.list.map({$0.uid}).contains(todo.uid)
-            }
-            print(newDocuments)
-//            newDocuments.forEach({self.array.append($0)})
             
-            
-            
-            
-//            let newDocuments = documents.map({Todo($0.data(),id: $0.documentID)}).filter({!self.todoList.list.contains($0)})
-            newDocuments.forEach({self.todoList.list.append($0)})
-            self.applySnapshot()
         }
+        
+        
+//        CKContainer.default().privateCloudDatabase.
+//        Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").document(self.list.uid!).collection("Todo").whereField("visible", isEqualTo: true).addSnapshotListener { (snapshot, error) in
+//            guard let documents = snapshot?.documents else {return}
+//        }
      }
      
      // Initial snapshot
-     fileprivate func applySnapshot() {
-        applySnapshotChanges(self.todoList.list)
-//        self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+    fileprivate func applySnapshot(_ list: [Todo]) {
+        applySnapshotChanges(list)
      }
     
     func applySnapshotChanges(_ array: [Todo]) {
@@ -175,9 +171,9 @@ class ViewController: UIViewController{
 
         // Will trigger once number of .enter() = number of .leave()
         disptach.notify(queue: .main) {
-            let document = Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").document(self.list.uid!).collection("Todo").document()
-            document.setData(todo.dictionary)
-            todo.uid = document.documentID
+//            let document = Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").document(self.list.uid!).collection("Todo").document()
+//            document.setData(todo.dictionary)
+//            todo.uid = document.documentID
         }
         
     }
@@ -207,12 +203,12 @@ class ViewController: UIViewController{
         SystemColors.allCases.forEach { (color) in
             alert.addAction(UIAlertAction(title: color.rawValue.capitalized, style: .default, handler: { (_) in
                 self.view.backgroundColor = color.color
-                self.list.color.color = color.color
+                self.list.color = color.color
                 self.navigationController?.navigationBar.barTintColor = color.color
-                Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").document(self.list.uid!).setData(
-                    ["color":color.rawValue]
-                    , merge: true)
-
+//                Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").document(self.list.uid!).setData(
+//                    ["color":color.rawValue]
+//                    , merge: true)
+//
             }))
         }
         

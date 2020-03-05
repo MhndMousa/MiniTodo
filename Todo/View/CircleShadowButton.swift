@@ -38,7 +38,6 @@ class CircleShadowButton: UIButton {
     }
     var isClicked: Bool = false{
         didSet{
-//            backgroundColor = self.isClicked ? .red : .clear
             self.isClicked ? setImage(UIImage(systemName: "checkmark.circle.fill")!, for: .normal) : setImage(nil, for: .normal)
         }
     }
