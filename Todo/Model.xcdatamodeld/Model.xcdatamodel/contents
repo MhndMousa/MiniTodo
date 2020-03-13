@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15508" systemVersion="19D76" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+    <entity name="List" representedClassName="List" syncable="YES" codeGenerationType="class">
+        <attribute name="color" optional="YES" attributeType="String" defaultValueString="red"/>
+        <attribute name="name" optional="YES" attributeType="String" defaultValueString=""/>
+        <relationship name="todoList" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Todo" inverseName="listRefrence" inverseEntity="Todo"/>
+    </entity>
+    <entity name="Todo" representedClassName="Todo" syncable="YES" codeGenerationType="class">
+        <attribute name="status" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="text" optional="YES" attributeType="String"/>
+        <relationship name="listRefrence" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="List" inverseName="todoList" inverseEntity="List"/>
+    </entity>
+    <elements>
+        <element name="Todo" positionX="45.2890625" positionY="104.9375" width="128" height="88"/>
+        <element name="List" positionX="284.76171875" positionY="111.8203125" width="190.93359375" height="88"/>
+    </elements>
+</model>

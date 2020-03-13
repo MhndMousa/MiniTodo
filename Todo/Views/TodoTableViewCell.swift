@@ -8,10 +8,12 @@
 
 import UIKit
 
-class TableViewCell: UITableViewCell,TickDelegate {
+class TodoTableViewCell: UITableViewCell,TickDelegate {
     func buttonTicked() {
         if let superview = self.superview as? UITableView{
-            changeAttributedText(string: todo.text, status: todo.status.opposite)
+//            changeAttributedText(string: todo.text!, status: TodoStatus(rawValue: !)
+
+            todo.status = (todo.status + 1) % 2
         }
     }
     
@@ -20,8 +22,8 @@ class TableViewCell: UITableViewCell,TickDelegate {
         didSet{
             print(self.todo.text, " Was added")
             backgroundColor = .clear
-            label.attributedText = makeAttributedText(string: todo.text, status: todo.status)
-            checkBox.isClicked = self.todo.status == .finished
+            label.attributedText = makeAttributedText(string: todo.text!, status: TodoStatus(rawValue: todo!.status)!)
+            checkBox.isClicked = self.todo.status == 1
             
         }
     }
@@ -77,10 +79,11 @@ class TableViewCell: UITableViewCell,TickDelegate {
     }
     func changeAttributedText(string:String, status: TodoStatus){
         label.attributedText = makeAttributedText(string: string, status: status)
-        todo.status = status
+        todo.status = status.rawValue
+        DataManager.shared.saveContext {}
     }
     func changeAccessoryTypeIfNeeded() {
-        accessoryType = todo.status == .finished ? .checkmark : .none
+        accessoryType = todo.status == 1 ? .checkmark : .none
     }
     
 

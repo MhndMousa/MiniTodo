@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import CloudKit
 
-extension ViewController:  UITableViewDelegate{
+extension TodoViewController:  UITableViewDelegate{
 //    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
 //        return todoList.dragItems(for: indexPath)
 //    }
@@ -74,23 +74,17 @@ extension ViewController:  UITableViewDelegate{
 //       }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let selectedItemIdentifier = self.datasource.itemIdentifier(for: indexPath) else {print("error");return}
-        guard let cell = tableView.cellForRow(at: indexPath) as? TableViewCell else {return}
+//        guard let selectedItemIdentifier = self.datasource.itemIdentifier(for: indexPath) else {print("error");return}
+        guard let cell = tableView.cellForRow(at: indexPath) as? TodoTableViewCell else {return}
         
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let alert = UIAlertController(title: "Change the shit", message: nil, preferredStyle: .alert)
+        let alert = UIAlertController(title: "Change your todo", message: nil, preferredStyle: .alert)
         alert.addTextField {
-            $0.text = selectedItemIdentifier.text
+            $0.text = cell.label.text
         }
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (_) in
-            self.changeText(of: selectedItemIdentifier, to:alert.textFields![0].text!)
-
-//            Firestore.firestore().collection("Users").document(Auth.auth().currentUser!.uid).collection("Lists").document(self.list.uid!).collection("Todo").document(selectedItemIdentifier.uid).setData(
-//                [
-//                    "text" : alert.textFields![0].text!
-//                ]
-//                , merge: true)
+            self.changeText(of: cell.todo, to:alert.textFields![0].text!)
         }))
         
         self.present(alert, animated: true, completion: nil)

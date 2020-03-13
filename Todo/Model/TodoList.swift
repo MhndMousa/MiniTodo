@@ -32,10 +32,15 @@
 //        list[index].status = status
 //    }
 //
-extension ViewController{
+extension TodoViewController{
     func changeText(of todo:Todo, to newString: String){
-        guard list.todoList != nil else {return}
-        list.todoList?[(list.todoList?.firstIndex(of: todo)!)!].text = newString
+        todo.text = newString
+        
+        
+        
+//        self.todoModel.applySnapshotChanges()
+//        guard list.todoList != nil else {return}
+//        list.todoList?[(list.todoList?.firstIndex(of: todo)!)!].text = newString
     }
 }
 //    

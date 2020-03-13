@@ -9,24 +9,39 @@
 import UIKit
 import MobileCoreServices
 import CloudKit
+import CoreData
 
 class ListTableViewController: UITableViewController {
     
     // MARK: Variables
-    typealias ListSnapShot = NSDiffableDataSourceSnapshot<ListSection,List>
-    var datasource : ListDataSource!
-    var array = [List]()
+    
+//    var container: NSPersistentContainer!
+//    var datasource : ListDataSource!
+//    var array = [List]()
     let imageView = UIImageView(image: #imageLiteral(resourceName: "yoda"))
     var cellId = "cell"
+    let refresher : UIRefreshControl = {
+        let r = UIRefreshControl()
+        r.tintColor = .tertiaryLabel
+        return r
+    }()
+    var listModel : ListModel!
+    
     
     // MARK: ViewController life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView = UITableView(frame: view.frame, style: .insetGrouped)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
+        refreshControl = self.refresher
+        listModel = ListModel(tableView:self.tableView)
+//        refreshControl?.addTarget(self, action: #selector(retrieveData), for: .valueChanged)
+//        guard container != nil else {
+//            fatalError("This view needs a persistent container.")
+//        }
         configureNavigationBar()
-        configureDataSource()
-        retrieveData()
+//        configureDataSource()
+//        retrieveData()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -75,79 +90,22 @@ class ListTableViewController: UITableViewController {
         ])
     }
     
-    fileprivate func configureDataSource() {
-        datasource = ListDataSource(tableView: self.tableView, cellProvider: { (tableView, indexPath, list) -> UITableViewCell? in
-            let cell = tableView.dequeueReusableCell(withIdentifier: self.cellId, for: indexPath) as! UITableViewCell
-            cell.textLabel?.text = String(self.array[indexPath.row].name)
-            cell.textLabel?.textColor = .systemGray6
-            cell.backgroundColor = self.array[indexPath.row].color
-            return cell
-        })
-    }
-    
-    fileprivate func retrieveData() {
-       
-        let predicate = NSPredicate(value: true)
-        let query = CKQuery(recordType: "List", predicate: predicate)
-        CKContainer.default().privateCloudDatabase.perform(query, inZoneWith: CKRecordZone.default().zoneID) { (record, error) in
-            guard let record = record else {return}
-            var lists  = record.map(List.init)
-            
-            DispatchQueue.main.async {
-                self.array.removeAll { list -> Bool in
-                    !lists.map({$0.id}).contains(list.id)
-                }
-                lists.removeAll { list -> Bool in
-                    self.array.map({$0.id}).contains(list.id)
-                }
-                
-//                print(newDocuments)
-                lists.forEach({self.array.append($0)})
-                
-                self.applySnapshotChanges(self.array)
-            }
-        }
-    }
     
     @objc func addList()  {
-         // Note to self not to forget how DispatchGroup works
-         // Number of entries in the stack determain how long the dispatch will hold
-         // Using Dispatch Group to wait for user input then append it to the list
-         let disptach = DispatchGroup()
-         disptach.enter()    // Increments the counter
-        let operation = CKRecord(recordType: List.recordType)
-        
          let alert = UIAlertController(title: "Add a list", message: nil , preferredStyle: .alert)
          alert.addTextField {$0.placeholder = "Clean the dishes"}
          alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (_) in
-            operation["text"] = alert.textFields![0].text! as CKRecordValue
-            operation["color"] = SystemColors.systemRandom().rawValue as CKRecordValue
-            disptach.leave() // Leave for every entry
+            let name = alert.textFields![0].text!
+            let color = SystemColors.systemRandom().rawValue
+            DataManager.saveList(name: name, color: color)
          }))
          alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
          self.present(alert, animated: true, completion: nil)
-
-         // Will trigger once number of .enter() = number of .leave()
-         disptach.notify(queue: .main) {
-            CKContainer.default().privateCloudDatabase.save(operation){_, _ in
-                print("Uploaded")
-            }
-         }
-        
     }
-
-    
-    fileprivate func applySnapshotChanges(_ array: [List]) {
-        var snapshot = ListSnapShot()
-        snapshot.appendSections(ListSection.allCases)
-        snapshot.appendItems(array,toSection: .main)
-        datasource.apply(snapshot, animatingDifferences: true)
-    }
-
 }
 
 // MARK: - TableViewDelegate
-
+// Todo: complete drag and drop
 
 extension ListTableViewController{
 //    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
@@ -215,13 +173,11 @@ extension ListTableViewController{
 //       }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let selectedItemIdentifier = self.datasource.itemIdentifier(for: indexPath) else {print("error");return}
-        guard let cell = tableView.cellForRow(at: indexPath) as? UITableViewCell else {return}
+//        guard let selectedItemIdentifier = self.datasource.itemIdentifier(for: indexPath) else {print("error");return}
+        guard let cell = tableView.cellForRow(at: indexPath) as? ListTableViewCell else {return}
         tableView.deselectRow(at: indexPath, animated: true)
-        
-        let root = ViewController()
-        root.list = (self.array[indexPath.row])
-        
+        let root = TodoViewController()
+        root.list = cell.list
         self.navigationController?.pushViewController(root, animated: true)
     }
     
