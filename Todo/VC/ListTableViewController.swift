@@ -11,13 +11,10 @@ import MobileCoreServices
 import CloudKit
 import CoreData
 
-class ListTableViewController: UITableViewController {
+class ListTableViewController: UICollectionViewController {
     
     // MARK: Variables
     
-//    var container: NSPersistentContainer!
-//    var datasource : ListDataSource!
-//    var array = [List]()
     let imageView = UIImageView(image: #imageLiteral(resourceName: "yoda"))
     var cellId = "cell"
     let refresher : UIRefreshControl = {
@@ -25,23 +22,46 @@ class ListTableViewController: UITableViewController {
         r.tintColor = .tertiaryLabel
         return r
     }()
-    var listModel : ListModel!
-    
+//    var listModel : ListModel!
+    var listModel : ListCollectionModel!
+    private func createLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewCompositionalLayout {
+            (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection in
+//            let sectionLayoutKind = SectionLayoutKind(rawValue: sectionIndex)!
+//            let columns = sectionLayoutKind.columnCount
+            let columns = 2
+
+            // The `group` auto-calculates the actual item width to make the requested number of `columns` fit,
+            // so this `widthDimension` will be ignored.
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                  heightDimension: .fractionalHeight(1.0))
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom:5, trailing: 5)
+
+            let groupHeight = columns == 1 ?
+                NSCollectionLayoutDimension.absolute(44) : NSCollectionLayoutDimension.fractionalWidth(0.2)
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                   heightDimension: groupHeight)
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: columns)
+
+            let section = NSCollectionLayoutSection(group: group)
+            section.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20)
+            return section
+        }
+        return layout
+    }
+
     
     // MARK: ViewController life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView = UITableView(frame: view.frame, style: .insetGrouped)
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
-        refreshControl = self.refresher
-        listModel = ListModel(tableView:self.tableView)
+        
+        collectionView = UICollectionView(frame: view.frame, collectionViewLayout: createLayout())
+        collectionView.backgroundColor = .systemGray6
+        collectionView.register(ListCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+        listModel = ListCollectionModel(tableView: collectionView, vc: self)
 //        refreshControl?.addTarget(self, action: #selector(retrieveData), for: .valueChanged)
-//        guard container != nil else {
-//            fatalError("This view needs a persistent container.")
-//        }
         configureNavigationBar()
-//        configureDataSource()
-//        retrieveData()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -55,7 +75,7 @@ class ListTableViewController: UITableViewController {
         self.navigationController?.navigationBar.titleTextAttributes      = [.foregroundColor: UIColor.secondaryLabel]
         self.navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor: UIColor.secondaryLabel]
         self.navigationController?.navigationBar.tintColor = .secondaryLabel
-        self.tableView.reloadData()
+        self.collectionView.reloadData()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -102,12 +122,15 @@ class ListTableViewController: UITableViewController {
          alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
          self.present(alert, animated: true, completion: nil)
     }
+    @objc public func presentColorChange(_ vc: UIAlertController){
+        self.present(vc, animated: true, completion: nil)
+    }
 }
 
 // MARK: - TableViewDelegate
-// Todo: complete drag and drop
+// TODO: complete drag and drop
 
-extension ListTableViewController{
+extension ListTableViewController: UICollectionViewDelegateFlowLayout{
 //    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
 //        let placeName = array[indexPath.row]
 //        let itemProvider = NSItemProvider(object: placeName)
@@ -172,13 +195,29 @@ extension ListTableViewController{
 //           }
 //       }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 //        guard let selectedItemIdentifier = self.datasource.itemIdentifier(for: indexPath) else {print("error");return}
-        guard let cell = tableView.cellForRow(at: indexPath) as? ListTableViewCell else {return}
-        tableView.deselectRow(at: indexPath, animated: true)
-        let root = TodoViewController()
-        root.list = cell.list
-        self.navigationController?.pushViewController(root, animated: true)
+//        guard let cell = tableView.cellForRow(at: indexPath) as? ListTableViewCell else {return}
+//        tableView.deselectRow(at: indexPath, animated: true)
+//        let root = TodoViewController()
+//        root.list = cell.list
+//        self.navigationController?.pushViewController(root, animated: true)
+//    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        guard let cell = collectionView.cellForItem(at: indexPath) as? ListCollectionViewCell else {return}
+        UIView.animate(withDuration: 0.14, delay: 0, options: .curveEaseIn, animations: {
+            cell.transform = CGAffineTransform(scaleX: 1.02, y: 1.02)
+        }) { (_) in
+            UIView.animate(withDuration: 0.14, delay: 0, options: .curveEaseIn, animations: {
+                cell.transform = CGAffineTransform(scaleX: 1, y: 1)
+            }){ (_) in
+                let root = TodoViewController()
+                root.list = cell.list
+                self.navigationController?.pushViewController(root, animated: true)
+            }
+        }
     }
     
 }
@@ -235,4 +274,10 @@ extension ListTableViewController {
     }
 
     
+}
+
+extension ListTableViewController: CellDelegate{
+    func changeColor(vc: UIAlertController) {
+        self.present(vc, animated: true, completion: nil)
+    }
 }

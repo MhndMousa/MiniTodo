@@ -8,6 +8,9 @@
 
 import UIKit
 import CloudKit
+class ListCollectionDataSource: UICollectionViewDiffableDataSource<ListSection,List> {
+    
+}
 
 class ListDataSource : UITableViewDiffableDataSource<ListSection, List>{
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -18,8 +21,8 @@ class ListDataSource : UITableViewDiffableDataSource<ListSection, List>{
     }
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         guard editingStyle == .delete else { return }
-         let list = ListModel.fetchedResultsController.object(at: indexPath)
-         DataManager.managedContext.delete(list)
+        let list = ListModel.fetchedResultsController.object(at: indexPath)
+        DataManager.managedContext.delete(list)
         DataManager.shared.saveContext{}
     }
     

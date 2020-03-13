@@ -71,9 +71,9 @@ class TodoViewController: UIViewController{
         self.navigationController?.navigationBar.prefersLargeTitles = true
         self.title = "خربشة"
         
-        let addItem = UIBarButtonItem(image: UIImage(systemName: "plus.circle.fill")!, style: .plain, target: self, action:  #selector(addTodo))
+        let addItem = UIBarButtonItem(image: UIImage(systemName: "plus.circle")!, style: .plain, target: self, action:  #selector(addTodo))
         let searchItem =  UIBarButtonItem(image: UIImage(systemName: "magnifyingglass.circle.fill"), style: .plain, target: self, action: #selector(toggleSearch))
-        let settingItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle.fill")!,style: .plain, target: self, action: #selector(changeColor))
+        let settingItem = UIBarButtonItem(image: UIImage(systemName: "pencil.tip.crop.circle")!,style: .plain, target: self, action: #selector(changeColor))
         
         self.navigationItem.rightBarButtonItems = [addItem,settingItem]
     }
