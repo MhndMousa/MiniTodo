@@ -18,7 +18,6 @@ enum SystemColors:String, CaseIterable {
 //    case systemTeal
     case indigo
     
-    
     var color : UIColor{
         switch self {
         case .red : return UIColor.systemRed
@@ -34,5 +33,8 @@ enum SystemColors:String, CaseIterable {
     }
     static func random() -> UIColor{
         return SystemColors.allCases.randomElement()!.color
+    }
+    static func systemRandom() -> SystemColors{
+        return SystemColors.allCases.randomElement()!
     }
 }

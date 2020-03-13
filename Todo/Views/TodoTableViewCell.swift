@@ -8,14 +8,12 @@
 
 import UIKit
 
-class TableViewCell: UITableViewCell,TickDelegate {
+class TodoTableViewCell: UITableViewCell,TickDelegate {
     func buttonTicked() {
         if let superview = self.superview as? UITableView{
-            
-//            let indexPath = superview.indexPath(for: self)
-//            superview.selectRow(at: indexPath, animated: true, scrollPosition: .bottom)
-            changeAttributedText(string: todo.text, status: todo.status.opposite)
-            
+//            changeAttributedText(string: todo.text!, status: TodoStatus(rawValue: !)
+
+            todo.status = (todo.status + 1) % 2
         }
     }
     
@@ -24,8 +22,8 @@ class TableViewCell: UITableViewCell,TickDelegate {
         didSet{
             print(self.todo.text, " Was added")
             backgroundColor = .clear
-            label.attributedText = makeAttributedText(string: todo.text, status: todo.status)
-            checkBox.isClicked = self.todo.status == .finished
+            label.attributedText = makeAttributedText(string: todo.text!, status: TodoStatus(rawValue: todo!.status)!)
+            checkBox.isClicked = self.todo.status == 1
             
         }
     }
@@ -67,7 +65,6 @@ class TableViewCell: UITableViewCell,TickDelegate {
         case .finished:
            let attributes = [NSAttributedString.Key.strokeColor :      UIColor.darkGray,
                              NSAttributedString.Key.foregroundColor:   UIColor.systemGray2,
-//                             NSAttributedString.Key.font:              UIFont.systemFont(ofSize: UIFont.systemFontSize, weight: .ultraLight)]
                              NSAttributedString.Key.font:              UIFont.preferredFont(forTextStyle: .caption1)]
            let text = NSMutableAttributedString(string: string, attributes: attributes)
            text.addAttribute(NSAttributedString.Key.strikethroughStyle,value: 2, range:NSMakeRange(0, string.count))
@@ -75,7 +72,6 @@ class TableViewCell: UITableViewCell,TickDelegate {
         case .unfinished:
             let attributes = [NSAttributedString.Key.foregroundColor:   UIColor.white,
                               NSAttributedString.Key.font:              UIFont.preferredFont(forTextStyle: .caption1)]
-//                              NSAttributedString.Key.font:              UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .body), weight: .ultraLight)]
             let text = NSMutableAttributedString(string: string, attributes: attributes)
             text.removeAttribute(NSAttributedString.Key.strikethroughStyle,range: NSMakeRange(0, string.count))
             return text
@@ -83,11 +79,11 @@ class TableViewCell: UITableViewCell,TickDelegate {
     }
     func changeAttributedText(string:String, status: TodoStatus){
         label.attributedText = makeAttributedText(string: string, status: status)
-        todo.status = status
-//        changeAccessoryTypeIfNeeded()
+        todo.status = status.rawValue
+        DataManager.shared.saveContext {}
     }
     func changeAccessoryTypeIfNeeded() {
-        accessoryType = todo.status == .finished ? .checkmark : .none
+        accessoryType = todo.status == 1 ? .checkmark : .none
     }
     
 

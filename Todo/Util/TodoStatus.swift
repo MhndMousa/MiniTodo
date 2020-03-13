@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum TodoStatus: Int,Codable,CaseIterable {
+enum TodoStatus: Int64,Codable,CaseIterable {
     case unfinished = 0, finished
     var description :String {
         switch self {
