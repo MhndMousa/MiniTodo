@@ -63,7 +63,7 @@ class TodoViewController: UIViewController{
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.delegate = self
-        searchController.searchBar.scopeButtonTitles = ["Unfinished","Finished","Both"]
+        searchController.searchBar.scopeButtonTitles = ["Both","Unfinished","Finished"]
         navigationItem.searchController = searchController
         definesPresentationContext = true
         
@@ -100,7 +100,6 @@ class TodoViewController: UIViewController{
             let text  = alert.textFields![0].text!
             let status : Int64 = 0
             DataManager.saveTodo(text: text, status: status, list: self.list)
-            
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         self.present(alert, animated: true, completion: nil)

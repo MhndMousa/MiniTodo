@@ -49,7 +49,11 @@ class ListCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         layer.cornerRadius = 5
-        
+        layer.shadowColor = UIColor.systemFill.cgColor
+        layer.shadowOffset = CGSize(width: 0, height: 2)
+        layer.shadowOpacity = 1
+        layer.shadowRadius = 10
+
         addSubview(textLabel)
         textLabel.translatesAutoresizingMaskIntoConstraints = false
         textLabel.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
@@ -60,8 +64,10 @@ class ListCollectionViewCell: UICollectionViewCell {
         elipses.translatesAutoresizingMaskIntoConstraints = false
         elipses.bottomAnchor.constraint(equalTo:bottomAnchor, constant: -10).isActive = true
         elipses.rightAnchor.constraint(equalTo: rightAnchor,  constant: -10).isActive = true
+        elipses.widthAnchor.constraint(equalToConstant:  23).isActive = true
+        elipses.heightAnchor.constraint(equalToConstant: 23).isActive = true
         elipses.setBackgroundImage(UIImage(systemName: "ellipsis.circle.fill"), for: .normal)
-        elipses.addTarget(self, action: #selector(changeColor), for: .touchUpInside)
+        elipses.addTarget(self, action: #selector(editList), for: .touchUpInside)
         elipses.tintColor = .systemGray6
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -83,7 +89,7 @@ class ListCollectionViewCell: UICollectionViewCell {
         case .began:
             self.superview?.bringSubviewToFront(self)
             UIView.animate(withDuration: 0.2) {
-                self.transform = CGAffineTransform(scaleX: 1.07, y: 1.07)
+                self.transform = CGAffineTransform(scaleX: 1.04, y: 1.04)
             }
         case .ended:
             UIView.animate(withDuration: 0.2) {
@@ -94,22 +100,19 @@ class ListCollectionViewCell: UICollectionViewCell {
         }
     }
     @objc
-    func changeColor(){
+    func editList(){
         var alert : UIAlertController
         #if targetEnvironment(macCatalyst)
-        alert  = UIAlertController(title: "Change Color" , message: nil, preferredStyle: .alert)
+        alert  = UIAlertController(title: "Edit list" , message: nil, preferredStyle: .alert)
         #endif
         
         #if !targetEnvironment(macCatalyst)
         alert  = UIAlertController(title: "Change Color" , message: nil, preferredStyle: .actionSheet)
         #endif
-        
-        SystemColors.allCases.forEach { (color) in
-            alert.addAction(UIAlertAction(title: color.rawValue.capitalized, style: .default, handler: { (_) in
-                self.list.color = color.rawValue
-                DataManager.shared.saveContext{}
-            }))
-        }
+        alert.addAction(UIAlertAction(title: "Delete List", style: .destructive, handler: { (_) in
+            DataManager.managedContext.delete(self.list)
+            DataManager.shared.saveContext{}
+        }))
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         delegate?.changeColor(vc: alert)
@@ -118,6 +121,7 @@ class ListCollectionViewCell: UICollectionViewCell {
 
 extension List{
     var uiColor : UIColor{
+        guard self.color != nil else{return .white}
         return SystemColors(rawValue: self.color!)!.color
     }
 }
