@@ -63,7 +63,7 @@ class TodoViewController: UIViewController{
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.delegate = self
-        searchController.searchBar.scopeButtonTitles = ["Unfinished","Finished","Both"]
+        searchController.searchBar.scopeButtonTitles = ["Both","Unfinished","Finished"]
         navigationItem.searchController = searchController
         definesPresentationContext = true
         
@@ -71,9 +71,9 @@ class TodoViewController: UIViewController{
         self.navigationController?.navigationBar.prefersLargeTitles = true
         self.title = "خربشة"
         
-        let addItem = UIBarButtonItem(image: UIImage(systemName: "plus.circle.fill")!, style: .plain, target: self, action:  #selector(addTodo))
+        let addItem = UIBarButtonItem(image: UIImage(systemName: "plus.circle")!, style: .plain, target: self, action:  #selector(addTodo))
         let searchItem =  UIBarButtonItem(image: UIImage(systemName: "magnifyingglass.circle.fill"), style: .plain, target: self, action: #selector(toggleSearch))
-        let settingItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle.fill")!,style: .plain, target: self, action: #selector(changeColor))
+        let settingItem = UIBarButtonItem(image: UIImage(systemName: "pencil.tip.crop.circle")!,style: .plain, target: self, action: #selector(changeColor))
         
         self.navigationItem.rightBarButtonItems = [addItem,settingItem]
     }
@@ -100,7 +100,6 @@ class TodoViewController: UIViewController{
             let text  = alert.textFields![0].text!
             let status : Int64 = 0
             DataManager.saveTodo(text: text, status: status, list: self.list)
-            
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         self.present(alert, animated: true, completion: nil)

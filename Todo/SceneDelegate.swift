@@ -18,9 +18,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         let color : UIColor = .secondaryLabel
         
-        let listViewController = ListTableViewController()
+        let layout = UICollectionViewFlowLayout()
+        let listViewController = ListTableViewController(collectionViewLayout: layout)
         let initialViewController = UINavigationController(rootViewController: listViewController)
-        initialViewController.view.tintColor                         = color 
+        initialViewController.view.tintColor                         = color
         initialViewController.navigationBar.shadowImage              = UIImage()
         initialViewController.navigationBar.prefersLargeTitles       = true
         

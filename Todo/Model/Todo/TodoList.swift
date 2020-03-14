@@ -32,17 +32,7 @@
 //        list[index].status = status
 //    }
 //
-extension TodoViewController{
-    func changeText(of todo:Todo, to newString: String){
-        todo.text = newString
-        
-        
-        
-//        self.todoModel.applySnapshotChanges()
-//        guard list.todoList != nil else {return}
-//        list.todoList?[(list.todoList?.firstIndex(of: todo)!)!].text = newString
-    }
-}
+
 //    
 //    /**
 //           A helper function that serves as an interface to the data model,

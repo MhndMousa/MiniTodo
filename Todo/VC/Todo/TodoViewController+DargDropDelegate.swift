@@ -99,3 +99,9 @@ extension TodoViewController:  UITableViewDelegate{
     }
   
 }
+
+extension TodoViewController{
+    func changeText(of todo:Todo, to newString: String){
+        todo.text = newString
+    }
+}

@@ -11,13 +11,13 @@ import Foundation
 extension TodoViewController: UISearchBarDelegate,UISearchResultsUpdating{
     func updateSearchResults(for searchController: UISearchController) {
         let searchBar = searchController.searchBar
-        let index = searchController.searchBar.selectedScopeButtonIndex
+        let index = searchController.searchBar.selectedScopeButtonIndex // [Both, Unfinished, Finished]
         
         guard let list = TodoModel.fetchedResultsController.fetchedObjects else {return}
          
         let filteredArray = list.filter {
             ($0.text?.lowercased().contains(searchBar.text!.lowercased()))! &&
-            ($0.status == index || index == 2)
+            ($0.status+1 == index || index == 0)    //  $0.status[0] = Both  -- $0.status[1] = Unfinished -- $0.status[2] = Finsihed
         }
         self.todoModel.applySnapshotChanges(filteredArray)
     }

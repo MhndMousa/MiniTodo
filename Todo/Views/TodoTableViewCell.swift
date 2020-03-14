@@ -14,6 +14,7 @@ class TodoTableViewCell: UITableViewCell,TickDelegate {
 //            changeAttributedText(string: todo.text!, status: TodoStatus(rawValue: !)
 
             todo.status = (todo.status + 1) % 2
+            superview.reloadData()
         }
     }
     
